@@ -10,8 +10,9 @@ const { Console } = require('console');
 
 // use auth controller router
 app.use(cors({
-    origin: ["https://chat-app-client-hvmx.onrender.com"],
+    origin: "https://chat-app-client-hvmx.onrender.com",
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
 
@@ -24,7 +25,8 @@ const server = require('http').createServer(app);
 
 const io = require('socket.io')(server,{cors: {
     origin: 'https://chat-app-client-hvmx.onrender.com',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    credentials: true
 }})
 
 app.use('/api/auth', authRouter);
