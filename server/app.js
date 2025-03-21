@@ -1,27 +1,30 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const http = require("http");
 
 const authRouter = require('./controllers/authController');
 const userRouter = require('./controllers/userController');
 const chatRouter = require('./controllers/chatController');
 const messageRouter = require('./controllers/messageController');
-const { Console } = require('console');
+
+const app = express();
+const server = http.createServer(app);
 
 // use auth controller router
 app.use(cors({
     origin: "https://chat-app-client-hvmx.onrender.com",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+
+app.options("*", cors());
 
 app.use(express.json({
     limit: "50mb"
 }
 ));
-
-const server = require('http').createServer(app);
+app.use(express.urlencoded({ extended: true }));
 
 const io = require('socket.io')(server,{cors: {
     origin: 'https://chat-app-client-hvmx.onrender.com',
@@ -35,6 +38,7 @@ app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter);
 
 const onlineUser = [];
+
 // test socket connection from client
 io.on('connection', socket => {
     socket.on('join-room', userId  => {
