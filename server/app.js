@@ -9,17 +9,24 @@ const messageRouter = require('./controllers/messageController');
 const { Console } = require('console');
 
 // use auth controller router
-app.use(cors());
+app.use(cors({
+    origin: ["https://chat-app-client-hvmx.onrender.com"],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 app.use(express.json({
     limit: "50mb"
 }
 ));
+
 const server = require('http').createServer(app);
 
 const io = require('socket.io')(server,{cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://chat-app-client-hvmx.onrender.com',
     methods: ['GET', 'POST']
 }})
+
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/chat', chatRouter);
